@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4 Pics 1 Word - Caesar Cipher Guessing Game</title>
+    <style>
+     /* Global Styles */
+     
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('https://i.pinimg.com/736x/d9/17/56/d91756573e4f2fda38c003768ea84956.jpg'); /* Background image */
+    background-size: cover;  /* Cover the entire viewport */
+    background-position: center center; /* Center the background */
+    background-attachment: fixed; /* Fixed background for parallax effect */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    color: #fff; /* Text color for contrast */
+}
+
+/* Start Page */
+#startPage {
+    display: block;
+    background-color: white;
+    width: 50%;
+    height: 70%;
+    opacity: 0.9;
+    text-align: center;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+#startPage h1 {
+ 
+    font-size: 50px;
+    color: #0056b3;
+}
+
+#scorePage h1 {
+    margin-top: 20%;
+    font-size: 50px;
+    color: #0056b3;
+}
+/* Game Page */
+#gamePage {
+    display: none;
+    width: 70%;
+    background-color: rgba(255, 255, 255, 0.85); /* Light white background for readability */
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: space-between;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+/* Left Panel (Game Form) */
+.left-panel {
+    flex: 1;
+    padding-right: 20px;
+}
+
+.left-panel h1 {
+    font-size: 24px;
+    color: #0056b3;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.instructions {
+    font-size: 14px;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+    line-height: 1.6;
+}
+
+input {
+    margin: 10px 0;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+input:focus {
+    border-color: #007BFF;
+    box-shadow: 0 0 5px 2px rgba(0, 123, 255, 0.5); /* Blue glow effect */
+    outline: none;
+}
+
+button {
+    padding: 12px 20px;
+    margin: 15px 10px;
+    cursor: pointer;
+    font-size: 16px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Button shadow */
+    transition: background-color 0.3s ease, transform 0.2s ease-in-out;
+    width: 250px;
+}
+
+button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05); /* Slight grow on hover */
+}
+
+button:focus {
+    outline: none;
+    box-shadow: 0 0 5px 2px rgba(0, 123, 255, 0.7); /* Focus shadow for accessibility */
+}
+
+h2 {
+    margin-top: 20px;
+    font-size: 20px;
+    color: #333;
+    text-align: center;
+}
+
+#result {
+    margin-top: 10px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Right Panel (Hints) */
+.right-panel {
+    flex: 1;
+    text-align: center;
+}
+
+.hint-label {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: black;
+}
+
+.hint-images {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.hint-image {
+    width: 45%;
+    margin: 10px 2.5%;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease;
+}
+
+
+/* Score Section */
+#score {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+    
+}
+
+/* Start and Score Page Visibility */
+#startPage, #gamePage, #scorePage {
+    display: none;
+}
+
+#startPage {
+    display: block;
+    text-align: center;
+}
+
+/* Score Page */
+#scorePage {
+    text-align: center;
+    padding: 25px;
+    background-color: rgba(255, 255, 255, 0.9);
+    width: 50%;
+    height: 70%;
+    opacity: 90%;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+
+#scorePage h1 {
+    font-size: 30px;
+    color: #0056b3;
+}
+
+#scorePage h2 {
+    font-size: 36px;
+    color: #007bff;
+}
+
+/* Game Buttons Layout */
+.game-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+button#nextItemBtn {
+    width: 48%;
+}
+
+
+/* General Text Styling */
+p {
+    font-size: 14px;
+    color: #555;
+    text-align: center;
+}
+
+label {
+    font-size: 16px;
+    color: #333;
+}
+.hint-image:hover {
+    transform: scale(1.05); /* Slight zoom effect on hover */
+}
+
+  /* Party Popper Effect */
+  .confetti {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: gold;
+            animation: confetti-fall 2s infinite;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+            }
+        }
+
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1; 
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0); 
+            background-color: rgba(0,0,0,0.4); 
+            padding-top: 60px;
+            color: black;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+         ul {
+            color: black;
+         }
+
+        
+    </style>
+</head>
+<body>
+    <!-- Start Page -->
+    <div id="startPage">
+        <h1>Welcome to the Caesar Cipher Game!</h1>
+        <img src="https://static.vecteezy.com/system/resources/thumbnails/014/585/783/small/silver-locked-padlock-png.png" alt="">
+        <p>Decrypt the word by guessing the shift value and images.</p>
+        <button id="startBtn">Start Game</button>
+        <button id="aboutBtn">About the Game</button>
+    </div>
+
+      <!-- Modal -->
+      <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>How to Play:</h3>
+                <ul>
+                    <li><strong>Encrypted Message:</strong> You will see a word that has been encrypted using the Caesar cipher. The letters have been shifted by a certain number of positions in the alphabet.</li>
+                    <li><strong>Hints:</strong> Images will be provided to help you figure out the word after decryption.</li>
+                    <li><strong>Decryption Process:</strong> You can try different shift values (from 1 to 25) to decrypt the message. Enter the number in the "Shift" input field.</li>
+                    <li><strong>Guess the Word:</strong> After decrypting the message, use the images as clues to guess the word. Type your guess in the "Your Guess" input field.</li>
+                    <li><strong>Winning the Game:</strong> The game progresses with new words to decrypt. Each time you guess correctly, you earn points. The game continues until all words are solved or the timer runs out.</li>
+        </div>
+    </div>
+
+    <!-- Game Page -->
+    <div id="gamePage" class="container">
+        <div class="left-panel">
+            <h1>4 Pics 1 Word - Caesar Cipher Guessing Game</h1>
+            <p class="instructions">Use the Caesar cipher decryption to guess the correct word based on the hint images. Try different shift values to decrypt the message and guess the word.</p>
+            <div>
+                <label for="shift">Shift (1-25):</label>
+                <input type="number" id="shift" min="1" max="25" placeholder="Enter your guess for the shift">
+            </div>
+            <div>
+                <label for="message">Encrypted Message:</label>
+                <input type="text" id="message" readonly>
+            </div>
+            <div>
+                <label for="guess">Your Guess:</label>
+                <input type="text" id="guess" placeholder="Guess the decrypted word">
+            </div>
+            
+            <h2>Result:</h2>
+            <p id="result"></p>
+            <h2>Score:</h2>
+            <p id="score">0</p> <!-- Display the score -->
+            <div class="container">
+                <button id="decryptBtn">Decrypt</button>
+                <button id="checkGuessBtn">Check Guess</button>
+            </div>
+        </div>
+        <div class="right-panel">
+            <div class="hint-label">Hints:</div>
+            <div class="hint-images" id="hintImages"></div>
+        </div>
+    </div>
+
+    <!-- Score Page -->
+     <!-- Confetti Container -->
+<div id="confetti"></div>
+
+    <div id="scorePage">
+        <h1>Game Over!</h1>
+        <p>Your final score is:</p>
+        <h2 id="finalScore"></h2>
+        <button id="playAgainBtn">Play Again</button>
+    </div>
+
+    <script>
+        const items = [
+            { 
+                encrypted: "Khoor", 
+                decrypted: "Hello", 
+                hintImages: [
+                    "https://static6.depositphotos.com/1029738/636/i/450/depositphotos_6361209-stock-photo-hand-raise-up-on-white.jpg", 
+                    "https://www.diversityresources.com/wp-content/uploads/2015/06/handshake-business-men-concept-scaled.jpg", 
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTblHdhUQrSY5KILHrbGdq77cNJeL1T6xaklg&s", 
+                    "https://as1.ftcdn.net/v2/jpg/03/35/98/48/1000_F_335984830_ziRb3iNSK4J8ywfzwY9Np5GUnL9o7V3x.jpg"
+                ]
+            },
+            { 
+                encrypted: "Cqrb", 
+                decrypted: "This", 
+                hintImages: [
+                    "https://i.pinimg.com/originals/61/c6/c2/61c6c23ea985e22c4ef765aa8612e9ba.jpg", 
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvhjIdGHuwK0AiLAPTMTmWElP-nXANuwHVjg&s", 
+                    "https://media.istockphoto.com/id/1362875627/vector/red-arrow-down-icon-direction-cursor-sign-navigation-concept-realistic-design-vector.jpg?s=612x612&w=0&k=20&c=Dze0IrqJfeKfAcj8tN2hd51k4vUuTIY-M4p2X-uIvdg=", 
+                    "https://www.shutterstock.com/image-vector/specific-icon-showing-choice-keywords-260nw-1224541048.jpg"
+                ]
+            },
+            { 
+                encrypted: "Lwtc", 
+                decrypted: "When", 
+                hintImages: [
+                    "https://www.ikea.com/ph/en/images/products/pluttis-wall-clock-black__1013114_pe829054_s5.jpg?f=s", 
+                    "https://s3.amazonaws.com/captainkimo/wp-content/uploads/2016/05/01124741/Miami-Beach-South-Pointe-Park-Inlet-Sunrise-Square.jpg", 
+                    "https://i0.wp.com/swiftcalendars.com/wp-content/uploads/2023/03/2024-Wall-Calendar-48x72-horizontal-Navy.jpg?fit=6000%2C6000&ssl=1", 
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMQfH2si4aTYn8bXkWVKjzS3mXDFN2e413yw&s"
+                ]
+            },
+            { 
+                encrypted: "Gybn", 
+                decrypted: "Word", 
+                hintImages: [
+                    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Blocksatz-Beispiel_deutsch%2C_German_text_sample_with_fully_justified_text.svg/1280px-Blocksatz-Beispiel_deutsch%2C_German_text_sample_with_fully_justified_text.svg.png", 
+                    "https://media.istockphoto.com/id/173015527/photo/a-single-red-book-on-a-white-surface.jpg?s=612x612&w=0&k=20&c=AeKmdZvg2_bRY2Yct7odWhZXav8CgDtLMc_5_pjSItY=", 
+                    "https://m.media-amazon.com/images/I/71Dt6NFYowL._AC_SL1500_.jpg", 
+                    "https://iotcdn.oss-ap-southeast-1.aliyuncs.com/2020-11/detailsp%20%281%29%20%281%29.jpg"
+                ]
+            },
+            { 
+                encrypted: "Erh", 
+                decrypted: "And", 
+                hintImages: [
+                    "https://media.istockphoto.com/id/688550958/vector/black-plus-sign-positive-symbol.jpg?s=612x612&w=0&k=20&c=0tymWBTSEqsnYYXWeWmJPxMotTGUwaGMGs6BMJvr7X4=", 
+                    "https://www.salesprogress.com/hs-fs/hub/53724/file-1853575215-jpg/images/employee_connection.jpg", 
+                    "https://static.brainpop.com/directus/48c2cd50-ce8d-4ef5-8be9-98ccd957cede.png", 
+                    "https://cdn.britannica.com/62/236062-050-CD53AE96/Ampersand-symbol.jpg"
+                ]
+            },
+            { 
+                encrypted: "Lzw", 
+                decrypted: "The", 
+                hintImages: [
+                    "https://compote.slate.com/images/07735032-ee37-4859-99e4-f45959ceff23.png", 
+                    "https://englishspeakingcourse.net/wp-content/uploads/2023/08/Parts-Of-Speech-Basic-English-Grammar.png", 
+                    "https://www.shutterstock.com/image-photo/hand-showing-specific-word-through-260nw-173931776.jpg", 
+                    "https://www.crestolympiads.com/assets/images/english/conjunction-c2.png"
+                ]
+            },
+            { 
+                encrypted: "Eph", 
+                decrypted: "Dog", 
+                hintImages: [
+                    "https://hips.hearstapps.com/hmg-prod/images/red-small-german-spitz-walking-in-the-autumn-park-royalty-free-image-1580496879.jpg?crop=0.670xw:1.00xh;0.173xw,0&resize=980:*", 
+                    "https://image.spreadshirtmedia.net/image-server/v1/products/T1459A839PA4459PT28D183596509W10000H10000/views/1,width=800","https://m.media-amazon.com/images/I/611tIvamoAL.jpg",
+                    "https://a.storyblok.com/f/145952/1750x1750/dbf5ac9957/freshturkey-drybeef.jpg/m/3840x0",
+                ]
+            },
+            { 
+                encrypted: "Irrg", 
+                decrypted: "Food", 
+                hintImages: [
+                    "https://health-for-teens-media.s3.eu-west-2.amazonaws.com/wp-content/uploads/2015/03/11125514/Thumb_EatingSandwich1160px.jpg", 
+                    "https://www.eatingwell.com/thmb/zvHrm_Z8F2qLeJenpJ6lYodtq7M=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/57831531-73819d8ce8f5413cac42cf1c907bc37a.jpg", 
+                    "https://crateandbarrel.com.ph/cdn/shop/products/MarinLtBlueDnnerPlateSSF22.jpg?v=1660795309", 
+                    "https://static.vecteezy.com/system/resources/thumbnails/014/000/459/small_2x/yummy-smile-typhography-design-free-vector.jpg"
+                ]
+            },
+            { 
+                encrypted: "Onyy", 
+                decrypted: "Ball", 
+                hintImages: [
+                    "https://i.ebayimg.com/images/g/6VgAAOSwKyJi5Jlf/s-l1200.jpg", 
+                    "https://m.media-amazon.com/images/I/81S+7h513XL._AC_UF1000,1000_QL80_.jpg", 
+                    "https://img.freepik.com/free-vector/gradient-sports-games-illustration_23-2148968156.jpg", 
+                    "https://media.istockphoto.com/id/1154510443/vector/boy-soccer-player-kicking-the-ball-on-his-leg.jpg?s=612x612&w=0&k=20&c=qm1Gfaa8H9lWGwqZK8eVhS3A2G5XOG4cetJJpY6hWdg="
+                ]
+            },
+            { 
+                encrypted: "Asg", 
+                decrypted: "Sky", 
+                hintImages: [
+                    "https://static.wikia.nocookie.net/aesthetics/images/b/b1/Blue_Texture.jpeg/revision/latest/scale-to-width-down/250?cb=20201119142030", 
+                    "https://static.scientificamerican.com/sciam/cache/file/6B2730C8-B0D0-485F-A0618F3954CF58D8_source.jpg?crop=1%3A1%2Csmart&w=1000", 
+                    "https://i.pinimg.com/originals/2c/10/07/2c10075903b7c80dcba2d66b47498c30.jpg", 
+                    "https://cdn.pixabay.com/photo/2017/11/01/22/41/birds-in-the-sky-2909619_640.jpg"
+                ]
+            }
+        ];
+
+        let currentItemIndex = 0;
+        let score = 0;  // Initialize score
+        let currentShift = 0; // To store the shift for the current item
+        const aboutBtn = document.getElementById("aboutBtn");
+        const aboutModal = document.getElementById("aboutModal");
+        const closeBtn = document.querySelector(".close");
+
+        // Open modal when "About the Game" button is clicked
+        aboutBtn.onclick = function() {
+            aboutModal.style.display = "block";
+            document.getElementById('startPage').style.display = 'none';
+        }
+
+        // Close modal when the "x" is clicked
+        closeBtn.onclick = function() {
+            aboutModal.style.display = "none";
+            showStartPage();
+        }
+
+        // Close modal if user clicks outside of the modal content
+        window.onclick = function(event) {
+            if (event.target == aboutModal) {
+                aboutModal.style.display = "none";
+            }
+            
+        }
+        // Show the start page
+function showStartPage() {
+    document.getElementById('startPage').style.display = 'block';
+    document.getElementById('gamePage').style.display = 'none';
+    document.getElementById('scorePage').style.display = 'none';
+}
+
+// Show the game page
+function showGamePage() {
+    document.getElementById('startPage').style.display = 'none';
+    document.getElementById('gamePage').style.display = 'flex';
+    document.getElementById('scorePage').style.display = 'none';
+    displayCurrentItem();  // Start the game
+}
+
+// Show the score page with the final score
+function showScorePage() {
+    document.getElementById('startPage').style.display = 'none';
+    document.getElementById('gamePage').style.display = 'none';
+    document.getElementById('scorePage').style.display = 'block';
+    document.getElementById('finalScore').innerText = score;  // Show final score
+    showPartyPopperEffect(); // Trigger confetti effect
+}
+
+// Randomly generate a shift value between 1 and 25
+function getRandomShift() {
+    return Math.floor(Math.random() * 25) + 1; // Random number between 1 and 25
+}
+
+// Display the current game item
+function displayCurrentItem() {
+    const currentItem = items[currentItemIndex];
+    currentShift = getRandomShift(); // Set the random shift for this item
+    document.getElementById('message').value = currentItem.encrypted;
+    document.getElementById('result').innerText = '';
+    document.getElementById('guess').value = '';
+    const hintImagesContainer = document.getElementById('hintImages');
+    hintImagesContainer.innerHTML = ''; // Clear previous images
+    currentItem.hintImages.forEach(src => {
+        const img = document.createElement('img');
+        img.src = src; // Ensure this URL is correct
+        img.className = 'hint-image';
+        hintImagesContainer.appendChild(img);
+    });
+    document.getElementById('nextItemBtn').disabled = true; // Disable "Next Item" until guess is correct
+}
+
+// Decrypt the message based on Caesar Cipher
+function decryptMessage() {
+    const shift = parseInt(document.getElementById('shift').value);
+    const encryptedMessage = document.getElementById('message').value;
+    const decryptedMessage = encryptedMessage.split('').map(char => {
+        if (char.match(/[A-Za-z]/)) {
+            const code = char.charCodeAt(0);
+            const base = code >= 65 && code <= 90 ? 65 : 97;
+            return String.fromCharCode(((code - base - shift + 26) % 26) + base);
+        }
+        return char;
+    }).join('');
+    document.getElementById('result').innerText = `Decrypted Message: ${decryptedMessage}`;
+}
+
+// Check if the player's guess is correct
+function checkGuess() {
+    const guess = document.getElementById('guess').value;
+    const currentItem = items[currentItemIndex];
+    const shift = parseInt(document.getElementById('shift').value);
+    const decryptedMessage = currentItem.encrypted.split('').map(char => {
+        if (char.match(/[A-Za-z]/)) {
+            const code = char.charCodeAt(0);
+            const base = code >= 65 && code <= 90 ? 65 : 97;
+            return String.fromCharCode(((code - base - shift + 26) % 26) + base);
+        }
+        return char;
+    }).join('');
+
+    if (guess.toLowerCase() === decryptedMessage.toLowerCase()) {
+        score++; // Increase score when the guess is correct
+        document.getElementById('result').innerText = 'Correct! Well done!';
+        document.getElementById('score').innerText = score; // Update the score
+
+        // Automatically go to the next item after a correct guess
+        document.getElementById('shift').value = '';  // Clear the shift input
+        setTimeout(nextItem, 1000);  // Wait 1 second before moving to the next item
+    } else {
+        document.getElementById('result').innerText = `Incorrect! Try again.`;
+    }
+}
+
+// Move to the next item or show score if it's the last item
+function nextItem() {
+    if (currentItemIndex === items.length - 1) {
+        // If it's the last item, show the score and "Play Again" button
+        showScorePage();
+    } else {
+        // Otherwise, move to the next item
+        currentItemIndex = (currentItemIndex + 1) % items.length;
+        displayCurrentItem();
+        document.getElementById('shift').value = '';  // Clear the shift input
+    }
+}
+
+// Reset the game when "Play Again" is clicked
+function playAgain() {
+    // Reset game variables
+    currentItemIndex = 0;
+    score = 0;
+    document.getElementById('score').innerText = score;  // Reset score display
+
+    // Clear the confetti
+    clearConfetti();
+
+    // Go to the game page
+    showStartPage();
+}
+
+// Show the confetti effect
+function showPartyPopperEffect() {
+    const confetti = document.getElementById('confetti');
+    for (let i = 0; i < 100; i++) {
+        const confettiPiece = document.createElement('div');
+        confettiPiece.classList.add('confetti-piece');
+        confettiPiece.style.left = `${Math.random() * 100}%`;
+        confettiPiece.style.animationDelay = `${Math.random() * 2}s`;
+        confettiPiece.style.animationDuration = `${Math.random() * 2 + 2}s`;
+        confetti.appendChild(confettiPiece);
+    }
+}
+
+// Clear the confetti after game over
+function clearConfetti() {
+    const confetti = document.getElementById('confetti');
+    while (confetti.firstChild) {
+        confetti.removeChild(confetti.firstChild);
+    }
+}
+
+// Event Listeners
+document.getElementById('startBtn').addEventListener('click', showGamePage);
+document.getElementById('decryptBtn').addEventListener('click', decryptMessage);
+document.getElementById('checkGuessBtn').addEventListener('click', checkGuess);
+document.getElementById('nextItemBtn').addEventListener('click', nextItem);
+document.getElementById('playAgainBtn').addEventListener('click', playAgain);
+document.getElementById('aboutBtn').addEventListener('click', showAboutPage);
+
+showStartPage();
+    </script>
+</body>
+</html>
